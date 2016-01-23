@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Data.Entity;
 using ImageGallery.Models;
 using System.IO;
+using System.Net;
 
 namespace ImageGallery
 {
@@ -23,11 +24,11 @@ namespace ImageGallery
                 .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
+            //HttpListener listener =(HttpListener)builder.Properties["System.Net.HttpListener"];
+            //listener.AuthenticationSchemes = AuthenticationSchemes.IntegratedWindowsAuthentication;
+
             if (env.IsDevelopment())
             {
-                /// This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-
                 /// This reads the configuration keys from the secret store.
                 /// For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 //builder.AddUserSecrets();
@@ -42,13 +43,20 @@ namespace ImageGallery
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-
-            services.AddApplicationInsightsTelemetry(Configuration);
-
+            // Add framework services.            
             services.AddEntityFramework()
                 .AddSqlServer()
                 .AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+            //// Configure Auth
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy(
+            //        "ManageStore",
+            //        authBuilder =>
+            //        {
+            //            authBuilder.RequireClaim("ManageStore", "Allowed");
+            //        });
+            //});
 
             services.AddMvc();
         }
@@ -58,8 +66,6 @@ namespace ImageGallery
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -73,8 +79,6 @@ namespace ImageGallery
 
             app.UseIISPlatformHandler();
 
-            app.UseApplicationInsightsExceptionTelemetry();
-
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
@@ -84,7 +88,16 @@ namespace ImageGallery
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            
+
+            //// Set up NTLM authentication for WebListener like below.
+            //// For IIS and IISExpress: Use inetmgr to setup NTLM authentication on the application vDir or
+            //// modify the applicationHost.config to enable NTLM.
+            //var listener = app.ServerFeatures.Get<WebListener>();
+            //if (listener != null)
+            //{
+            //    listener.AuthenticationManager.AuthenticationSchemes = System.Net.AuthenticationSchemes.Ntlm;
+            //}
+
             //string mapPath =  Path.Combine(env.WebRootPath,"Temp");
             //if (Directory.Exists(mapPath))
             //{

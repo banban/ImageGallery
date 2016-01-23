@@ -1,4 +1,5 @@
 ﻿using ImageGallery.Models;
+using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Controllers
 {
+    //[Authorize]
     public class PhotosController : Controller
     {
         private readonly ApplicationDBContext db;
@@ -28,6 +30,13 @@ namespace ImageGallery.Controllers
         //public PhotosController(ApplicationDBContext dbContext)
         //{
         //    this.db = dbContext;
+        //}
+
+        //[HttpGet]
+        //[Route("/api/[controller]")]
+        //public async Task<IActionResult> AllAsync()
+        //{
+        //    return Json(await db.Photos.AllAsync()); 
         //}
 
         public IActionResult Index(Int16? kind, int? kindId)

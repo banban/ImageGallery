@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using System.IO;
+using Microsoft.AspNet.Authorization;
 
 namespace ImageGallery.Controllers
 {
     //http://www.dotnetdreamer.net/upload-imagedisplay-image-in-aspnet-mvc
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()

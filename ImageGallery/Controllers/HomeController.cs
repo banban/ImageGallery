@@ -9,7 +9,7 @@ using Microsoft.AspNet.Authorization;
 namespace ImageGallery.Controllers
 {
     //http://www.dotnetdreamer.net/upload-imagedisplay-image-in-aspnet-mvc
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
